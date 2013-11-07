@@ -22,7 +22,10 @@ public void isActive(String name, String link){
   Assert.assertTrue(browser.isLinkActive(link));
 }
   */
-public class MyListener extends TestListenerAdapter {
+  
+//public class MyListener extends TestListenerAdapter {
+
+public class MyListener extends SauceOnDemandTestListener {
 
 	@Override
 	public void onTestSuccess(ITestResult tr) {
