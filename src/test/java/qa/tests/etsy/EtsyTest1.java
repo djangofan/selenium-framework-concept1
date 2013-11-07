@@ -83,8 +83,7 @@ public class EtsyTest1 extends SeTest {
 
 	@Override
 	public String getSessionId() {
-		// TODO Auto-generated method stub
-		return null;
+		return ThreadedWebDriver.access().getSessionId().toString();
 	}
 
 	@Override
