@@ -16,6 +16,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
+import com.saucelabs.common.SauceOnDemandAuthentication;
 
 public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
 
@@ -25,8 +26,8 @@ public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
 	private static final String SELENIUM_IEDRIVER_ENV_NAME = "SAUCE_IEDRIVER_VERSION";
 	private static final String SELENIUM_CHROMEDRIVER_ENV_NAME = "SAUCE_CHROMEDRIVER_VERSION";
 	private static final String DESIRED_BROWSER_VERSION_ENV_NAME = "SAUCE_BROWSER_VERSION";
-	private static final String SAUCE_APIKEY_ENV_NAME = "SAUCE_APIKEY";
-	private static final String SAUCE_USERNAME_ENV_NAME = "SAUCE_USERNAME";
+	//private static final String SAUCE_APIKEY_ENV_NAME = "SAUCE_APIKEY";
+	//private static final String SAUCE_USERNAME_ENV_NAME = "SAUCE_USERNAME";
 	private static final String SAUCE_DISABLE_VIDEO_ENV_NAME = "SAUCE_DISABLE_VIDEO";
 	private static final String SAUCE_BUILD_ENV_NAME = "SAUCE_BUILD_NUMBER";
 	private static final String SAUCE_NATIVE_ENV_NAME = "NATIVE_EVENTS";
@@ -35,6 +36,8 @@ public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
 	private static final String DESIRED_OS_ENV_NAME = "SAUCE_OS";
 	private static final String SAUCE_URL_ENV_NAME = "SAUCE_URL";
 	private static final String DEFAULT_SAUCE_URL = "ondemand.saucelabs.com:80";
+	
+	private static SauceOnDemandAuthentication soda = new SauceOnDemandAuthentication();
 
 	public SauceDriver(Capabilities desiredCapabilities) {
 		super( getSauceEndpoint(),
@@ -67,8 +70,10 @@ public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
 	}
 
 	private static URL getSauceEndpoint() {
-		String sauceUsername = getNonNullEnv(SAUCE_USERNAME_ENV_NAME);
-		String sauceKey = getNonNullEnv(SAUCE_APIKEY_ENV_NAME);
+		//String sauceUsername = getNonNullEnv(SAUCE_USERNAME_ENV_NAME);
+		String sauceUsername = soda.getUsername();
+		//String sauceKey = getNonNullEnv( SAUCE_APIKEY_ENV_NAME );
+		String sauceKey = soda.getAccessKey();
 		String sauceUrl = System.getProperty(SAUCE_URL_ENV_NAME);
 		if ( sauceUrl == null ) {
 			sauceUrl = DEFAULT_SAUCE_URL;

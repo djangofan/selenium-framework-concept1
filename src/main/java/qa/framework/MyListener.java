@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.testng.ITestContext;
 import org.testng.ITestResult;
-import org.testng.TestListenerAdapter;
+import com.saucelabs.testng.SauceOnDemandTestListener;
+
+// This is an method of setting test name that might not work 
 
 /*
  * @DataProvider(name = "DP1")

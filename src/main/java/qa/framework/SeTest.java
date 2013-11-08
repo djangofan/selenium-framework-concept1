@@ -3,7 +3,6 @@ package qa.framework;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import org.openqa.selenium.Architecture;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.CapabilityType;
@@ -103,11 +102,9 @@ public abstract class SeTest implements SauceOnDemandSessionIdProvider, SauceOnD
 		return abilities;
 	}	
 
-	public void initializeSauceBrowser() {	
-		
+	public void initializeSauceBrowser() {			
        SauceDriver driver = new SauceDriver( generateDesiredCapabilities( BrowserType.FIREFOX ) );
-       ThreadedWebDriver.sync( driver );
-        
+       ThreadedWebDriver.sync( driver );        
 	}
 
 }

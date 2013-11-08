@@ -1,5 +1,7 @@
 package qa.tests.etsy;
 
+import java.io.File;
+
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
@@ -93,8 +95,14 @@ public class EtsyTest2 extends SeTest {
 
 	@Override
 	public SauceOnDemandAuthentication getAuthentication() {
-		// TODO Auto-generated method stub
-		return null;
+		File props = new File(new File(System.getProperty("user.home")), ".sauce-ondemand");
+		if ( props.exists() ) {
+		    SauceOnDemandAuthentication soda = new SauceOnDemandAuthentication();
+		    return soda;
+		} else {
+			testlog.info("The .sauce-ondemand properties file, containing key and username, is missing.");
+			return null;
+		}
 	}	
 
 }
