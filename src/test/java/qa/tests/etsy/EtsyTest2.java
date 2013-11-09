@@ -1,13 +1,9 @@
 package qa.tests.etsy;
 
-import java.io.File;
-
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import com.saucelabs.common.SauceOnDemandAuthentication;
 
 import qa.framework.SeTest;
 import qa.framework.ThreadedWebDriver;
@@ -87,22 +83,5 @@ public class EtsyTest2 extends SeTest {
 		helper.closeAllBrowserWindows();
 		testlog.info("Finished cleanUp EtsyTest2");
 	}
-
-	@Override
-	public String getSessionId() {
-        return ThreadedWebDriver.access().getSessionId().toString();
-	}
-
-	@Override
-	public SauceOnDemandAuthentication getAuthentication() {
-		File props = new File(new File(System.getProperty("user.home")), ".sauce-ondemand");
-		if ( props.exists() ) {
-		    SauceOnDemandAuthentication soda = new SauceOnDemandAuthentication();
-		    return soda;
-		} else {
-			testlog.info("The .sauce-ondemand properties file, containing key and username, is missing.");
-			return null;
-		}
-	}	
 
 }

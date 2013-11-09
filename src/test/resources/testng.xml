@@ -2,7 +2,6 @@
 <suite name="all-tests" preserve-order="false" verbose="10" parallel="classes" thread-count="10">
     <listeners>
         <listener class-name="com.saucelabs.testng.SauceOnDemandTestListener"/>
-		<!-- <listener class-name="qa.framework.MyListener"/> -->
     </listeners>
 	<test name="smoke">
 		<packages>

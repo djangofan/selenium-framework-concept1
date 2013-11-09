@@ -16,7 +16,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
-import com.saucelabs.common.SauceOnDemandAuthentication;
+import qa.framework.testng.SauceOnDemandAuthentication;
 
 public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
 

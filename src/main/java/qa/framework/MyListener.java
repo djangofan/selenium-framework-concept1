@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.testng.ITestContext;
 import org.testng.ITestResult;
-import com.saucelabs.testng.SauceOnDemandTestListener;
+import qa.framework.testng.SauceOnDemandTestListener;
 
 // This is an method of setting test name that might not work 
 

@@ -1,5 +1,6 @@
 package qa.framework;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -15,9 +16,10 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
 
-import com.saucelabs.common.SauceOnDemandSessionIdProvider;
-import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
-import com.saucelabs.testng.SauceOnDemandTestListener;
+import qa.framework.testng.SauceOnDemandAuthentication;
+import qa.framework.testng.SauceOnDemandSessionIdProvider;
+import qa.framework.testng.SauceOnDemandAuthenticationProvider;
+import qa.framework.testng.SauceOnDemandTestListener;
 
 /*
  * Root class that all test classes must extend
@@ -105,6 +107,23 @@ public abstract class SeTest implements SauceOnDemandSessionIdProvider, SauceOnD
 	public void initializeSauceBrowser() {			
        SauceDriver driver = new SauceDriver( generateDesiredCapabilities( BrowserType.FIREFOX ) );
        ThreadedWebDriver.sync( driver );        
+	}
+	
+	@Override
+	public SauceOnDemandAuthentication getAuthentication() {
+		File props = new File(new File(System.getProperty("user.home")), ".sauce-ondemand");
+		if ( props.exists() ) {
+		    SauceOnDemandAuthentication soda = new SauceOnDemandAuthentication();
+		    return soda;
+		} else {
+			testlog.info("The .sauce-ondemand properties file, containing key and username, is missing.");
+			return null;
+		}
+	}	
+	
+	@Override
+	public String getSessionId() {
+		return ThreadedWebDriver.access().getSessionId().toString();
 	}
 
 }
