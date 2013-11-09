@@ -1,7 +1,7 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="all-tests" preserve-order="false" verbose="10" parallel="classes" thread-count="10">
     <listeners>
-        <listener class-name="com.saucelabs.testng.SauceOnDemandTestListener"/>
+        <listener class-name="qa.framework.testng.SauceOnDemandTestListener"/>
     </listeners>
 	<test name="smoke">
 		<packages>

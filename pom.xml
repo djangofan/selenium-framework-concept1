@@ -85,9 +85,6 @@
 					<systemPropertyVariables>
 						<browser>firefox</browser>
 						<testURL>https://www.etsy.com</testURL>
-						<binaryRootFolder>C:/Selenium2</binaryRootFolder>
-						<chromeBinaryVersion>2.4</chromeBinaryVersion>
-						<ieBinaryVersion>2.37.0</ieBinaryVersion>
 						<SAUCE_OS>OS X 10.6</SAUCE_OS>
 						<SAUCE_URL>ondemand.saucelabs.com:80</SAUCE_URL>
 						<SAUCE_JOB_NAME>THOR</SAUCE_JOB_NAME>
@@ -99,7 +96,6 @@
 						<SAUCE_BUILD>build-1234</SAUCE_BUILD>
 						<SAUCE_NATIVE></SAUCE_NATIVE> <!-- can be null -->
 						<SAUCE_REQUIRE_FOCUS>true</SAUCE_REQUIRE_FOCUS>
-						<USE_SAUCE>true</USE_SAUCE>
 					</systemPropertyVariables>
 					<suiteXmlFiles>
 						<suiteXmlFile>target/test-classes/testng.xml</suiteXmlFile>

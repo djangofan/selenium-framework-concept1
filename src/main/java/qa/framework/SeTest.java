@@ -24,16 +24,6 @@ import qa.framework.testng.SauceOnDemandTestListener;
 /*
  * Root class that all test classes must extend
  * Implements https://github.com/saucelabs/sauce-java
- * 
- * Expected method names:
- *   BeforeTest - setUpTest 
- *   AfterTest - cleanUpTest
- *   BeforeMethod - setUpMethod
- *   AfterMethod - cleanUpMethod
- *   BeforeClass - static setUpClass
- *   AfterClass - static tearDownClass
- *   BeforeSuite - static setUpSuite
- *   AfterSuite - static tearDownSuite
  */
 @Listeners({SauceOnDemandTestListener.class})
 public abstract class SeTest implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
