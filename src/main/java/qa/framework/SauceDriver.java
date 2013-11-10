@@ -16,7 +16,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import qa.framework.testng.SauceOnDemandAuthentication;
-import static qa.framework.testng.Utils.*;
 
 public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
 
@@ -48,21 +47,21 @@ public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
 	}
 
 	private static String getDesiredBrowserVersion() {
-		return readPropertyOrEnv(DESIRED_BROWSER_VERSION_ENV_NAME, "");
+		return SeUtil.readPropertyOrEnv(DESIRED_BROWSER_VERSION_ENV_NAME, "");
 	}
 
 	private static String getDesiredOS() {
-		return getNonNullEnv(DESIRED_OS_ENV_NAME);
+		return SeUtil.getNonNullEnv(DESIRED_OS_ENV_NAME);
 	}
 
 	private static String getSeleniumVersion() {
-		return getNonNullEnv(SELENIUM_VERSION_ENV_NAME);
+		return SeUtil.getNonNullEnv(SELENIUM_VERSION_ENV_NAME);
 	}
 
 	private static URL getSauceEndpoint() {
 		String sauceUsername = soda.getUsername();
 		String sauceKey = soda.getAccessKey();
-		String sauceUrl = readPropertyOrEnv( SAUCE_URL_ENV_NAME, "" );
+		String sauceUrl = SeUtil.readPropertyOrEnv( SAUCE_URL_ENV_NAME, "" );
 		if ( sauceUrl == null ) {
 			sauceUrl = DEFAULT_SAUCE_URL;
 		}
@@ -81,9 +80,9 @@ public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
 		mungedCapabilities.setCapability("disable-popup-handler", true);
 		mungedCapabilities.setCapability("public", "public");
 		mungedCapabilities.setCapability("record-video", shouldRecordVideo());
-		mungedCapabilities.setCapability("build", readPropertyOrEnv( SAUCE_BUILD_ENV_NAME, "" ) );
+		mungedCapabilities.setCapability("build", SeUtil.readPropertyOrEnv( SAUCE_BUILD_ENV_NAME, "" ) );
 
-		String nativeEvents = readPropertyOrEnv( SAUCE_NATIVE_ENV_NAME, "" );
+		String nativeEvents = SeUtil.readPropertyOrEnv( SAUCE_NATIVE_ENV_NAME, "" );
 		if (nativeEvents != null) {
 			String[] tags = {nativeEvents};
 			mungedCapabilities.setCapability("tags", tags);
@@ -95,13 +94,13 @@ public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
 		}
 		mungedCapabilities.setPlatform(platform);
 
-		String jobName = readPropertyOrEnv( SAUCE_JOB_NAME_ENV_NAME, "" );
+		String jobName = SeUtil.readPropertyOrEnv( SAUCE_JOB_NAME_ENV_NAME, "" );
 		if ( jobName != null ) {
 			mungedCapabilities.setCapability("name", jobName);
 		}
 
 		if (DesiredCapabilities.internetExplorer().getBrowserName().equals(desiredCapabilities.getBrowserName())) {
-			String ieDriverVersion = readPropertyOrEnv( SELENIUM_IEDRIVER_ENV_NAME, "" );
+			String ieDriverVersion = SeUtil.readPropertyOrEnv( SELENIUM_IEDRIVER_ENV_NAME, "" );
 			if (ieDriverVersion != null) {
 				mungedCapabilities.setCapability("iedriver-version", ieDriverVersion);
 			}
@@ -109,7 +108,7 @@ public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
 		}
 
 		if ( DesiredCapabilities.chrome().getBrowserName().equals( desiredCapabilities.getBrowserName()  ) ) {
-			String chromeDriverVersion = readPropertyOrEnv( SELENIUM_CHROMEDRIVER_ENV_NAME, "" );
+			String chromeDriverVersion = SeUtil.readPropertyOrEnv( SELENIUM_CHROMEDRIVER_ENV_NAME, "" );
 			if (chromeDriverVersion == null) {
 				chromeDriverVersion = "2.2";
 			}
@@ -117,7 +116,7 @@ public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
 			mungedCapabilities.setCapability("chromedriver-version", chromeDriverVersion);
 		}
 
-		String requireFocus = readPropertyOrEnv( SAUCE_REQUIRE_FOCUS_ENV_NAME, "" );
+		String requireFocus = SeUtil.readPropertyOrEnv( SAUCE_REQUIRE_FOCUS_ENV_NAME, "" );
 		if (requireFocus != null) {
 			mungedCapabilities.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS,
 					Boolean.parseBoolean(requireFocus));
@@ -127,7 +126,7 @@ public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
 	}
 
 	public static boolean shouldRecordVideo() {
-		return ! Boolean.parseBoolean( readPropertyOrEnv( SAUCE_DISABLE_VIDEO_ENV_NAME, "" ) );
+		return ! Boolean.parseBoolean( SeUtil.readPropertyOrEnv( SAUCE_DISABLE_VIDEO_ENV_NAME, "" ) );
 	}
 
 	public static Platform getEffectivePlatform() {

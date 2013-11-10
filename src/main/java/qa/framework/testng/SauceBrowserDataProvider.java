@@ -1,6 +1,6 @@
 package qa.framework.testng;
 
-import qa.framework.testng.Utils;
+import static qa.framework.SeUtil.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -35,7 +35,7 @@ public class SauceBrowserDataProvider {
         List<Object[]> data = new ArrayList<Object[]>();
 
         //read browsers from JSON-formatted environment variable if specified
-        String json = Utils.readPropertyOrEnv(SAUCE_ONDEMAND_BROWSERS, "");
+        String json = readPropertyOrEnv(SAUCE_ONDEMAND_BROWSERS, "");
 
         if (json == null || json.equals("")) {
             throw new IllegalArgumentException("Unable to find JSON");

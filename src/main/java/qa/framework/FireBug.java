@@ -3,11 +3,12 @@ package qa.framework;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import java.io.File;
 import java.io.IOException;
+import static qa.framework.SeUtil.locate;
 
 public class FireBug {
 
   public static void addTo(FirefoxProfile profile) throws IOException {
-    File firebug = InProject.locate("third_party/firebug/firebug-1.5.0-fx.xpi");
+    File firebug = locate("third_party/firebug/firebug-1.5.0-fx.xpi");
     profile.addExtension(firebug);
     profile.setPreference("extensions.firebug.addonBarOpened", true);
     profile.setPreference("extensions.firebug.allPagesActivation", "on");

@@ -6,7 +6,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import qa.framework.SeTest;
-import qa.framework.ThreadedWebDriver;
 import qa.framework.page.etsy.EtsySearchPage;
 
 public class EtsyTest1 extends SeTest {
@@ -17,10 +16,7 @@ public class EtsyTest1 extends SeTest {
 
 	@BeforeTest
 	public void setUpTest() {
-		if ( ThreadedWebDriver.access() == null ) {
-			this.initializeSauceBrowser();
-		}
-		testlog.info("Finished setUp EtsyTest1");
+		testlog.info("EtsyTest1.setUpTest()...");
 	}
 
 	/*  Will implement this as soon as I get the framework working
@@ -61,8 +57,8 @@ public class EtsyTest1 extends SeTest {
 	@Test(dataProvider = "dummy1", threadPoolSize = 1, invocationCount = 1,  timeOut = 60000)
 	public void test1( String tName, String sString, String dMatch ) {
 		testlog.info("{} being run...", tName );
-		ThreadedWebDriver.access().get( System.getProperty("testURL") );
-		EtsySearchPage gs = new EtsySearchPage();
+		driver.get( System.getProperty("testURL") );
+		EtsySearchPage gs = new EtsySearchPage( driver );
 		gs.setSearchString( sString );
 		gs.selectInEtsyDropdown( dMatch );  
 		gs.clickSearchButton();
@@ -73,9 +69,9 @@ public class EtsyTest1 extends SeTest {
 
 	@AfterTest
 	public void cleanUpTest() {		
-		ThreadedWebDriver.access().get("about:about");
+		driver.get("about:about");
 		util.sleep(2);
-		helper.closeAllBrowserWindows();
+		helper.closeAllBrowserWindows( driver );
 		testlog.info("Finished cleanUp EtsyTest1");
 	}
 

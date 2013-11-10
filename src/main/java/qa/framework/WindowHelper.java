@@ -29,10 +29,11 @@ public class WindowHelper {
 	
 	public WindowHelper() {
 		helperlog = LoggerFactory.getLogger( "WindowHelper" );
+		helperlog.info("Invoked WindowHelper helper class.");
 	}
 	
-	public WebElement getElementByLocator( By locator ) {
-		Wait<WebDriver> wait = new FluentWait<WebDriver>( ThreadedWebDriver.access() )
+	public WebElement getElementByLocator( SauceDriver driver, By locator ) {
+		Wait<WebDriver> wait = new FluentWait<WebDriver>( driver )
 			    .withTimeout(30, TimeUnit.SECONDS)
 			    .pollingEvery(5, TimeUnit.SECONDS)
 			    .ignoring( NoSuchElementException.class, StaleElementReferenceException.class );
@@ -40,21 +41,20 @@ public class WindowHelper {
 		return we;
 	}
 
-	public void closeAllBrowserWindows() {
-		Set<String> handles = ThreadedWebDriver.access().getWindowHandles();
+	public void closeAllBrowserWindows( SauceDriver driver ) {
+		Set<String> handles = driver.getWindowHandles();
 		if ( handles.size() > 1 ) {
 			helperlog.info("Closing " + handles.size() + " window(s).");
 			for ( String windowId : handles ) {
 				helperlog.info("-- Closing window handle: " + windowId );
-				ThreadedWebDriver.access().switchTo().window( windowId ).close();
+				driver.switchTo().window( windowId ).close();
 			}
 		} else if ( handles.size()==1 ) {
 			helperlog.info("Closing last open window.");
 		} else {
 			helperlog.info("There were no window handles to close.");
 		}
-		ThreadedWebDriver.access().quit(); // this quit is critical, otherwise last window will hang open
-		ThreadedWebDriver.remove();
+		driver.quit(); // this quit is critical, otherwise last window will hang open
 	}
 
 	/**
@@ -63,10 +63,10 @@ public class WindowHelper {
 	 *  contain. If new windows are found, switch to latest window and
 	 *  update allHandles cache.
 	 */
-	public String handleNewWindow() {
+	public String handleNewWindow( SauceDriver driver) {
 		String newHandle = "";
 		printHandles();
-		Set<String> updatedHandles = ThreadedWebDriver.access().getWindowHandles();
+		Set<String> updatedHandles = driver.getWindowHandles();
 		if ( updatedHandles.size() < handleCache.size() ) {
 			mainHandle = "";
 			helperlog.info("Illegal state: actually, I saw a window close.");
@@ -87,7 +87,7 @@ public class WindowHelper {
 				}
 				if ( !newHandle.equals("") ) { // outside loop so it catches latest window handle if there are multiple
 					helperlog.info("Switch to new window.");
-					ThreadedWebDriver.access().switchTo().window( newHandle ); // switch to new window handle
+					driver.switchTo().window( newHandle ); // switch to new window handle
 				}
 			} else {
 				mainHandle = "";
@@ -98,27 +98,6 @@ public class WindowHelper {
 		return newHandle;
 	}
 
-	/*void positionMainHandle() {
-		handleCache = ThreadWebDriver.get().getWindowHandles();
-		if ( handleCache.size() == 0 ) {
-			mainHandle = "";
-			throw new IllegalStateException("No browser window handles are open.\n" +
-					"Browser is uninitialized.");
-		} else if ( handleCache.size() > 1 ) {
-			mainHandle = "";
-			throw new IllegalStateException("More than one browser window handle is open.\n" +
-					"Please close all browsers and restart test.");
-		} else {
-			mainHandle = ThreadWebDriver.get().switchTo().defaultContent().getWindowHandle();
-			mainWindowTitle = ThreadWebDriver.get().switchTo().defaultContent().getTitle();
-			int fromLeft = Integer.parseInt( System.getProperty("windowXPosition") );
-			int fromTop = Integer.parseInt( System.getProperty("windowYPosition") );
-			int width = Integer.parseInt( System.getProperty("windowWidth") );
-			int height = Integer.parseInt( System.getProperty("windowHeight") );
-			setWindowPosition( mainHandle, width, height, fromLeft + getTestXOffset(), fromTop );
-		}
-	}*/
-
 	public void printHandles() {
 		helperlog.info( "Open windows:" );
 		for ( String windowId : handleCache ) {
@@ -128,16 +107,11 @@ public class WindowHelper {
 			}
 		}
 	}
-	
-	/*public void setWindowPosition(String handle, int width, int height, int fleft, int ftop) {
-		ThreadWebDriver.get().switchTo().window( handle ).manage().window().setPosition( new Point(fleft, ftop) );
-		ThreadWebDriver.get().switchTo().window( handle ).manage().window().setSize( new Dimension( width, height) );
-	}*/
 
-	void updateHandleCache() {
+	public void updateHandleCache( SauceDriver driver ) {
 		helperlog.info("Updating cache of window handles...");
 		printHandles();
-		Set<String> updatedHandles = ThreadedWebDriver.access().getWindowHandles();
+		Set<String> updatedHandles = driver.getWindowHandles();
 		if ( !updatedHandles.isEmpty() ) {
 			if ( updatedHandles.size() > handleCache.size() ) {
 				helperlog.info( "Window handle number increased to: " + updatedHandles.size() );

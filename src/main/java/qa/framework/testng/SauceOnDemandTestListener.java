@@ -1,11 +1,10 @@
 package qa.framework.testng;
 
+import qa.framework.SeUtil;
 import qa.framework.testng.SauceOnDemandAuthentication;
 import qa.framework.testng.SauceOnDemandSessionIdProvider;
-import qa.framework.testng.Utils;
 
 import com.saucelabs.saucerest.SauceREST;
-import static qa.framework.testng.Utils.*;
 
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -51,15 +50,15 @@ public class SauceOnDemandTestListener extends TestListenerAdapter {
     @Override
     public void onStart(ITestContext testContext) {
         super.onStart(testContext);
-        String browser = readPropertyOrEnv(SELENIUM_BROWSER, "");
+        String browser = SeUtil.readPropertyOrEnv(SELENIUM_BROWSER, "");
         if (browser != null && !browser.equals("")) {
             System.setProperty("browser", browser);
         }
-        String platform = readPropertyOrEnv(SELENIUM_PLATFORM, "");
+        String platform = SeUtil.readPropertyOrEnv(SELENIUM_PLATFORM, "");
         if (platform != null && !platform.equals("")) {
             System.setProperty("os", platform);
         }
-        String version = readPropertyOrEnv(SELENIUM_VERSION, "");
+        String version = SeUtil.readPropertyOrEnv(SELENIUM_VERSION, "");
         if (version != null && !version.equals("")) {
             System.setProperty("version", version);
         }
@@ -105,7 +104,7 @@ public class SauceOnDemandTestListener extends TestListenerAdapter {
             if (sessionId != null) {
                 Map<String, Object> updates = new HashMap<String, Object>();
                 updates.put("passed", false);
-                Utils.addBuildNumberToUpdate(updates);
+                SeUtil.addBuildNumberToUpdate(updates);
                 sauceREST.updateJobInfo(sessionId, updates);
             }
         }
@@ -125,7 +124,7 @@ public class SauceOnDemandTestListener extends TestListenerAdapter {
             if (sessionId != null) {
                 Map<String, Object> updates = new HashMap<String, Object>();
                 updates.put("passed", true);
-                Utils.addBuildNumberToUpdate(updates);
+                SeUtil.addBuildNumberToUpdate(updates);
                 sauceREST.updateJobInfo(sessionId, updates);
             }
         }

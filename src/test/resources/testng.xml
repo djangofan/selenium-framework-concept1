@@ -3,7 +3,7 @@
     <listeners>
         <listener class-name="qa.framework.testng.SauceOnDemandTestListener"/>
     </listeners>
-	<test name="smoke">
+	<test name="smoke" parallel="true">
 		<packages>
             <package name="qa.tests.etsy"/>
     </packages>

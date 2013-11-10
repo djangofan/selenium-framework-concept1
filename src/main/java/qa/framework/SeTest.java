@@ -4,15 +4,14 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
 
@@ -28,22 +27,35 @@ import qa.framework.testng.SauceOnDemandTestListener;
 @Listeners({SauceOnDemandTestListener.class})
 public abstract class SeTest implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
-	// helpers
 	protected static Logger testlog;
 	protected SeUtil util;
 	protected WindowHelper helper;
 	protected BrowserType browserType;
 	protected DesiredCapabilities abilities;
+	protected SauceDriver driver;
+
+	public SauceDriver getDriver() {
+		return driver;
+	}
+	
+	public void initializeDriver( BrowserType type ) {
+		if ( driver == null ) {
+		    driver = new SauceDriver( generateDesiredCapabilities( type ) );
+		} else {
+			testlog.info("Driver already initialized.");
+		}
+	}
 	
 	public SeTest() {
 		testlog = LoggerFactory.getLogger( this.getClass() );
+	    initializeDriver( BrowserType.FIREFOX );		
 		util = new SeUtil();
 		helper = new WindowHelper();
 	}
 	
-	@BeforeSuite
-	public static void setUpSuite() {
-		testlog.info("Calling SeTest.setUpSuite...");
+	@BeforeClass
+	public static void setUpClass() {
+		testlog.info("Calling SeTest.setUpClass...");
 		//TODO Load api key from  target/test-classes/api.key file
 	}
 	
@@ -52,21 +64,16 @@ public abstract class SeTest implements SauceOnDemandSessionIdProvider, SauceOnD
 		testlog.info("Calling SeTest.setUpTest...");
 	}
 
-	@AfterSuite
-	public static void tearDownSuite() {
-		testlog.info("Calling SeTest.tearDownSuite...");
-		ThreadedWebDriver.access().quit();
-		ThreadedWebDriver.remove();
+	@AfterClass
+	public void tearDownClass() {
+		testlog.info("Calling SeTest.tearDownClass...");
+		getDriver().quit();
 	}
 
 	@AfterMethod
 	public void cleanUpMethod() {
 		testlog.info("Calling SeTest.cleanUpMethod...");
-		ThreadedWebDriver.access().manage().deleteAllCookies();
-	}
-
-	protected WebDriver getDriver() {
-		return ThreadedWebDriver.access();
+		getDriver().manage().deleteAllCookies();
 	}
 
 	private DesiredCapabilities generateDesiredCapabilities( BrowserType capabilityType ) {	
@@ -93,11 +100,6 @@ public abstract class SeTest implements SauceOnDemandSessionIdProvider, SauceOnD
 		}
 		return abilities;
 	}	
-
-	public void initializeSauceBrowser() {			
-       SauceDriver driver = new SauceDriver( generateDesiredCapabilities( BrowserType.FIREFOX ) );
-       ThreadedWebDriver.sync( driver );        
-	}
 	
 	@Override
 	public SauceOnDemandAuthentication getAuthentication() {
@@ -113,7 +115,7 @@ public abstract class SeTest implements SauceOnDemandSessionIdProvider, SauceOnD
 	
 	@Override
 	public String getSessionId() {
-		return ThreadedWebDriver.access().getSessionId().toString();
+		return getDriver().getSessionId().toString();
 	}
 
 }

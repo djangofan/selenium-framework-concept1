@@ -10,7 +10,8 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import qa.framework.ThreadedWebDriver;
+
+import qa.framework.SauceDriver;
 import qa.framework.page.AbstractPage;
 
 public class EtsySearchPage extends AbstractPage {
@@ -18,12 +19,13 @@ public class EtsySearchPage extends AbstractPage {
 	public final String searchFieldName = "search_query";
 	public final String searchButtonName = "search_submit";
 	public final String suggestIons = "div.nav-search-text div#search-suggestions ul li";
+	private SauceDriver driver;
 
 	@FindBy(name = searchFieldName ) public WebElement searchField;
 	@FindBy(name = searchButtonName ) public WebElement searchButton;
 
-	public EtsySearchPage() {
-        super();
+	public EtsySearchPage( SauceDriver driver ) {
+		this.driver = driver;
 		this.get();
 		pagelog.info("EtsySearchPage constructor...");
 	}
@@ -47,13 +49,13 @@ public class EtsySearchPage extends AbstractPage {
 	@Override
 	public void load() {
 		pagelog.info("EtsySearchPage.load()...");
-		PageFactory.initElements( ThreadedWebDriver.access(), this ); // initialize WebElements on page
+		PageFactory.initElements( driver, this ); // initialize WebElements on page
 		util.sleep(2);
 	}
 
 	public void clickSearchButton() {
 		if ( searchButton == null ) {
-			searchButton = getElementByLocator( By.id( searchButtonName ) );
+			searchButton = window.getElementByLocator( driver, By.id( searchButtonName ) );
 		} else {
 			try {
 				searchButton.click();
@@ -68,14 +70,14 @@ public class EtsySearchPage extends AbstractPage {
 	}
 
 	public void setSearchString( String sstr ) {
-		clearAndType( searchField, sstr );
+		util.clearAndType( searchField, sstr );
 	}
 
 	public void clickEtsyLogo() {
 		pagelog.info("Click Etsy logo...");
 		WebElement logo = null;
 		By locator = By.cssSelector( "h1#etsy a" );
-		logo = getElementByLocator( locator );
+		logo = window.getElementByLocator( driver, locator );
 		logo.click();
 		util.sleep(2);;
 	}
@@ -90,7 +92,7 @@ public class EtsySearchPage extends AbstractPage {
 	 */
 	public void selectInEtsyDropdown( String match ) {
 		pagelog.info("Selecting \"" + match + "\" from Etsy dynamic dropdown.");
-		List<WebElement> allSuggestions = ThreadedWebDriver.access().findElements( By.cssSelector( suggestIons ) );  
+		List<WebElement> allSuggestions = driver.findElements( By.cssSelector( suggestIons ) );  
 		try {
 			for ( WebElement suggestion : allSuggestions ) {
 				Thread.sleep(600);
