@@ -20,14 +20,12 @@ import java.util.Map;
  *   Code from: https://github.com/saucelabs/sauce-java
  * <p/>
  * TODO how to specify whether to download log/video?
- *
- * @author Ross Rowe
  */
 public class SauceOnDemandTestListener extends TestListenerAdapter {
 
-    private static final String SELENIUM_BROWSER = "SELENIUM_BROWSER";
-    private static final String SELENIUM_PLATFORM = "SELENIUM_PLATFORM";
-    private static final String SELENIUM_VERSION = "SELENIUM_VERSION";
+    //private static final String SELENIUM_BROWSER = "SELENIUM_BROWSER";
+    //private static final String SELENIUM_PLATFORM = "SELENIUM_PLATFORM";
+    //private static final String SELENIUM_VERSION = "SELENIUM_VERSION";
 
     /**
      * The underlying {@link com.saucelabs.common.SauceOnDemandSessionIdProvider} instance which contains the Selenium session id.  This is typically
@@ -50,18 +48,18 @@ public class SauceOnDemandTestListener extends TestListenerAdapter {
     @Override
     public void onStart(ITestContext testContext) {
         super.onStart(testContext);
-        String browser = SeUtil.readPropertyOrEnv(SELENIUM_BROWSER, "");
-        if (browser != null && !browser.equals("")) {
-            System.setProperty("browser", browser);
+        /*String browser = SeUtil.readPropertyOrEnv( SELENIUM_BROWSER, "" );
+        if ( browser != null && !browser.equals("") ) {
+            System.setProperty( "browser", browser );
         }
-        String platform = SeUtil.readPropertyOrEnv(SELENIUM_PLATFORM, "");
-        if (platform != null && !platform.equals("")) {
-            System.setProperty("os", platform);
+        String platform = SeUtil.readPropertyOrEnv( SELENIUM_PLATFORM, "" );
+        if ( platform != null && !platform.equals("") ) {
+            System.setProperty( "os", platform );
         }
-        String version = SeUtil.readPropertyOrEnv(SELENIUM_VERSION, "");
-        if (version != null && !version.equals("")) {
-            System.setProperty("version", version);
-        }
+        String version = SeUtil.readPropertyOrEnv( SELENIUM_VERSION, "" );
+        if ( version != null && !version.equals("") ) {
+            System.setProperty( "version", version );
+        }*/
     }
 
     /**
@@ -69,12 +67,11 @@ public class SauceOnDemandTestListener extends TestListenerAdapter {
      */
     @Override
     public void onTestStart(ITestResult result) {
-        super.onTestStart(result);
-
-        if (result.getInstance() instanceof SauceOnDemandSessionIdProvider) {
+        super.onTestStart( result );
+        if ( result.getInstance() instanceof SauceOnDemandSessionIdProvider ) {
             this.sessionIdProvider = (SauceOnDemandSessionIdProvider) result.getInstance();
             //log the session id to the system out
-            if (sessionIdProvider.getSessionId() != null) {
+            if ( sessionIdProvider.getSessionId() != null ) {
                 System.out.println(	String.format( "SauceOnDemandSessionID=%1$s job-name=%2$s", 
                 		sessionIdProvider.getSessionId(), result.getMethod().getMethodName() ) );
             }
@@ -88,7 +85,7 @@ public class SauceOnDemandTestListener extends TestListenerAdapter {
             //otherwise use the default authentication
             sauceOnDemandAuthentication = new SauceOnDemandAuthentication();
         }
-        this.sauceREST = new SauceREST(sauceOnDemandAuthentication.getUsername(), sauceOnDemandAuthentication.getAccessKey());
+        this.sauceREST = new SauceREST( sauceOnDemandAuthentication.getUsername(), sauceOnDemandAuthentication.getAccessKey() );
     }
 
     @Override
@@ -98,8 +95,7 @@ public class SauceOnDemandTestListener extends TestListenerAdapter {
     }
 
     private void markJobAsFailed() {
-
-        if (this.sauceREST != null && sessionIdProvider != null) {
+        if ( this.sauceREST != null && sessionIdProvider != null ) {
             String sessionId = sessionIdProvider.getSessionId();
             if (sessionId != null) {
                 Map<String, Object> updates = new HashMap<String, Object>();
@@ -108,7 +104,6 @@ public class SauceOnDemandTestListener extends TestListenerAdapter {
                 sauceREST.updateJobInfo(sessionId, updates);
             }
         }
-
     }
 
     @Override
@@ -118,17 +113,15 @@ public class SauceOnDemandTestListener extends TestListenerAdapter {
     }
 
     private void markJobAsPassed() {
-
-        if (this.sauceREST != null && sessionIdProvider != null) {
+        if ( this.sauceREST != null && sessionIdProvider != null ) {
             String sessionId = sessionIdProvider.getSessionId();
-            if (sessionId != null) {
+            if ( sessionId != null ) {
                 Map<String, Object> updates = new HashMap<String, Object>();
                 updates.put("passed", true);
                 SeUtil.addBuildNumberToUpdate(updates);
                 sauceREST.updateJobInfo(sessionId, updates);
             }
         }
-
     }
 
 }

@@ -1,4 +1,4 @@
-package qa.framework;
+package qa.framework.firefox;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -12,7 +12,7 @@ import java.net.URL;
 
 public class FirefoxProfileFactory {
 	
-	static Logger log = LoggerFactory.getLogger( "FirefoxProfileFactory" );
+	static Logger fpflog = LoggerFactory.getLogger( "FirefoxProfileFactory" );
 
     static FirefoxProfile create() {
         FirefoxProfile profile = new FirefoxProfile();
@@ -32,7 +32,7 @@ public class FirefoxProfileFactory {
         p.setPreference("browser.shell.checkDefaultBrowser", false);        
         // Setup FireBug maybe
         if ( firebugEnabled.equals("true") ) {
-            log.info("Enabling Firebug...");
+            fpflog.info("Enabling Firebug...");
         	configureFirebug(p);
         }
     }
@@ -46,19 +46,19 @@ public class FirefoxProfileFactory {
 			try {
 				firebug = File.createTempFile("firebug-" + firebugVersion, ".xpi");
 			} catch ( IOException e ) {
-				log.info("Error creating a temp file.");
+				fpflog.info("Error creating a temp file.");
 				e.printStackTrace();
 			}
             try {
 				FileUtils.copyURLToFile( new URL(firebugUrl), firebug );
 			} catch ( IOException e ) {
-				log.info("Error copying URL to file.");
+				fpflog.info("Error copying URL to file.");
 				e.printStackTrace();
 			}
             try {
 				p.addExtension(firebug);
 			} catch ( IOException e ) {
-				log.info("Error adding Firebug extension.");
+				fpflog.info("Error adding Firebug extension.");
 				e.printStackTrace();
 			}
             p.setPreference("extensions.firebug.currentVersion", firebugVersion);
@@ -70,7 +70,7 @@ public class FirefoxProfileFactory {
             p.setPreference("extensions.firebug.showFirstRunPage", false);
             p.setPreference("extensions.firebug.toolbarCustomizationDone", true);
         } else {
-        	log.info("Firebug properties are required.");
+        	fpflog.info("Firebug properties are required.");
         }
     }
 

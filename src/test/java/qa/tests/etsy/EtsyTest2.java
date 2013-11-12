@@ -12,12 +12,12 @@ public class EtsyTest2 extends SeTest {
 
 	EtsyTest2() {
 		super();
-		testlog.info("Loaded EtsyTest2 class.");
+		selog.info("Loaded EtsyTest2 class.");
 	}
 
 	@BeforeTest
 	public void setUpTest() {	
-		testlog.info("EtsyTest2.setUpTest()...");
+		selog.info("EtsyTest2.setUpTest()...");
 	}
 
 	/*  Will implement this as soon as I get the framework working
@@ -57,23 +57,23 @@ public class EtsyTest2 extends SeTest {
 
 	@Test(dataProvider = "dummy2", threadPoolSize = 1, invocationCount = 1,  timeOut = 60000)
 	public void test2( String tName, String sString, String dMatch ) {
-		testlog.info("{} being run...", tName );
-		driver.get( System.getProperty("testURL") );
-		EtsySearchPage gs = new EtsySearchPage( driver );
+		selog.info("{} being run...", tName );
+		seDriver.get( System.getProperty("testURL") );
+		EtsySearchPage gs = new EtsySearchPage( seDriver );
 		gs.setSearchString( sString );
 		gs.selectInEtsyDropdown( dMatch );  
 		gs.clickSearchButton();
 		util.sleep(2);
 		gs.clickEtsyLogo(); // click Etsy logo
-		testlog.info("Page object test '{}' is done.", tName );
+		selog.info("Page object test '{}' is done.", tName );
 	}
 
 	@AfterTest
 	public void cleanUpTest() {		
-		driver.get("about:about");
+		seDriver.get("about:about");
 		util.sleep(2);
-		helper.closeAllBrowserWindows( driver );
-		testlog.info("Finished cleanUp EtsyTest2");
+		this.quitBrowser();
+		selog.info("Finished cleanUp EtsyTest2");
 	}
 
 }

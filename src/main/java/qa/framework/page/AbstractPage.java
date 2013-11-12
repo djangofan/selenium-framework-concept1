@@ -4,17 +4,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import qa.framework.SeUtil;
-import qa.framework.WindowHelper;
+import qa.framework.SeHelper;
 
 public abstract class AbstractPage implements LoadablePage {
 
 	protected Logger pagelog;
-	protected WindowHelper window;
+	protected SeHelper window;
 	protected SeUtil util;
 	
 	public AbstractPage() {
 		pagelog = LoggerFactory.getLogger( this.getClass() );
-		window = new WindowHelper();
+		window = new SeHelper();
 		util = new SeUtil();
 	}
 	

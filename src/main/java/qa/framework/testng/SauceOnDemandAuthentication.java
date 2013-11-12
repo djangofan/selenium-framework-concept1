@@ -14,33 +14,29 @@ public class SauceOnDemandAuthentication {
 
     private String username = "";
     private String accessKey = "";
-    private static final String SAUCE_USER_NAME = "SAUCE_USER_NAME";
-    private static final String SAUCE_API_KEY = "SAUCE_API_KEY";
-    private static String defaultKeyFile = "sauce-labs.key";
+    private String keyFileLoc = "sauce.key";
 
-    //TODO These constructors could be improved
     public SauceOnDemandAuthentication() {
-        	File keyFile = new File( defaultKeyFile );
+        	File keyFile = new File( keyFileLoc );
         	if ( keyFile.exists() ) {
                 loadCredentialsFromFile( keyFile );
             } else {
-            	System.out.println("Could not load SauceLabs key file from your project root:\n " + 
+            	System.out.println("Could not load SauceLabs key file from:\n " + 
                     keyFile.getAbsolutePath() );
-            	System.out.println("Will try to load values from environment instead.");
-                this.username = getPropertyOrEnvironmentVariable( SAUCE_USER_NAME );
-                this.accessKey = getPropertyOrEnvironmentVariable( SAUCE_API_KEY );
             }
     }
 
-    public SauceOnDemandAuthentication(String username, String accessKey) {
+    public SauceOnDemandAuthentication( String username, String accessKey ) {
         this.username = username;
         this.accessKey = accessKey;
-        String fileLoc = System.getProperty("user.dir") + File.pathSeparatorChar + defaultKeyFile;
-        File myFile = new File( fileLoc );
-        if ( !myFile.exists() ) {
-            System.out.println("Creating new " + defaultKeyFile + " file in your home directory.");
-            saveTo( myFile );
-        }
+    }
+    
+    public boolean isLoaded() {
+    	if ( this.username.isEmpty() || this.accessKey.isEmpty() ) {
+    		return false;
+    	} else {
+    		return true;
+    	}
     }
 
     private void loadCredentialsFromFile( File propertyFile ) {
@@ -64,14 +60,6 @@ public class SauceOnDemandAuthentication {
                 //ignore error and continue
             }
         }
-    }
-
-    private static String getPropertyOrEnvironmentVariable(String property) {
-        String value = System.getProperty(property);
-        if (value == null || value.equals("")) {
-            value = System.getenv(property);
-        }
-        return value;
     }
 
     public String getUsername() {

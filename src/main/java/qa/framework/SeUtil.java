@@ -14,6 +14,7 @@ import com.google.common.base.Preconditions;
 public class SeUtil {
 
 	public Logger log;
+	private static SeProps props = new SeProps();
 
 	public SeUtil() {
 		log = LoggerFactory.getLogger("Util");
@@ -21,35 +22,26 @@ public class SeUtil {
 	}
 	
 	public static void addBuildNumberToUpdate(Map<String, Object> updates) {
-		String buildNumber = readPropertyOrEnv("BAMBOO_BUILDNUMBER", null);
+		String buildNumber = props.getProperty( "BAMBOO_BUILDNUMBER" );
 		if (buildNumber == null || buildNumber.equals("")) {
-			// try Jenkins
-			buildNumber = readPropertyOrEnv("JENKINS_BUILD_NUMBER", null);
+			buildNumber = props.getProperty( "JENKINS_BUILD_NUMBER" );
 		}
 		if (buildNumber != null && !(buildNumber.equals(""))) {
 			updates.put("build", buildNumber);
 		}
 	}
+	
 	public static String getNonNullEnv(String propertyName) {
 		String value = readPropertyOrEnv(propertyName, "");
 		Preconditions.checkNotNull(value);
 		return value;
 	}
 
-	/**
-	 * Locates a file in the current project
-	 * 
-	 * @param path
-	 *     path to file to locate from root of project
-	 * @return file being sought, if it exists
-	 * @throws org.openqa.selenium.WebDriverException
-	 *             wrapped FileNotFoundException if file could not be found
-	 */
 	public static File locate(String path) {
 		File dir = new File(".").getAbsoluteFile();
 		while (dir != null) {
 			File needle = new File(dir, path);
-			if (needle.exists()) {
+			if ( needle.exists() ) {
 				return needle;
 			}
 			dir = dir.getParentFile();

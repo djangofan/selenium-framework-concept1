@@ -83,19 +83,7 @@
 				<version>2.16</version>
 				<configuration>
 					<systemPropertyVariables>
-						<browser>firefox</browser>
-						<testURL>https://www.etsy.com</testURL>
-						<SAUCE_OS>OS X 10.6</SAUCE_OS>
-						<SAUCE_URL>ondemand.saucelabs.com:80</SAUCE_URL>
-						<SAUCE_JOB_NAME>THOR</SAUCE_JOB_NAME>
-						<SAUCE_SELENIUM_VERSION>2.37.0</SAUCE_SELENIUM_VERSION>
-						<SAUCE_IEDRIVER_VERSION>10</SAUCE_IEDRIVER_VERSION>
-						<SAUCE_CHROMEDRIVER_VERSION>27</SAUCE_CHROMEDRIVER_VERSION>
-						<SAUCE_BROWSER_VERSION>22</SAUCE_BROWSER_VERSION>
-						<SAUCE_DISABLE_VIDEO>false</SAUCE_DISABLE_VIDEO>
-						<SAUCE_BUILD>build-1234</SAUCE_BUILD>
-						<SAUCE_NATIVE></SAUCE_NATIVE> <!-- can be null -->
-						<SAUCE_REQUIRE_FOCUS>true</SAUCE_REQUIRE_FOCUS>
+						<testX>testY</testX>
 					</systemPropertyVariables>
 					<suiteXmlFiles>
 						<suiteXmlFile>target/test-classes/testng.xml</suiteXmlFile>

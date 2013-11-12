@@ -18,7 +18,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 /*
  * Defines common functionality for handling Selenium windows
  */
-public class WindowHelper {
+public class SeHelper {
 	
 	final int DEFAULT_IMPLICIT_WAIT = 30;
 	final int DEFAULT_EXPLICIT_WAIT = 10;
@@ -27,7 +27,7 @@ public class WindowHelper {
 	Set<String> handleCache = new HashSet<String>();
 	Logger helperlog;
 	
-	public WindowHelper() {
+	public SeHelper() {
 		helperlog = LoggerFactory.getLogger( "WindowHelper" );
 		helperlog.info("Invoked WindowHelper helper class.");
 	}
@@ -39,22 +39,6 @@ public class WindowHelper {
 			    .ignoring( NoSuchElementException.class, StaleElementReferenceException.class );
 		WebElement we = wait.until( ExpectedConditions.presenceOfElementLocated( locator ) );
 		return we;
-	}
-
-	public void closeAllBrowserWindows( SauceDriver driver ) {
-		Set<String> handles = driver.getWindowHandles();
-		if ( handles.size() > 1 ) {
-			helperlog.info("Closing " + handles.size() + " window(s).");
-			for ( String windowId : handles ) {
-				helperlog.info("-- Closing window handle: " + windowId );
-				driver.switchTo().window( windowId ).close();
-			}
-		} else if ( handles.size()==1 ) {
-			helperlog.info("Closing last open window.");
-		} else {
-			helperlog.info("There were no window handles to close.");
-		}
-		driver.quit(); // this quit is critical, otherwise last window will hang open
 	}
 
 	/**

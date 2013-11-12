@@ -1,4 +1,4 @@
-package qa.framework;
+package qa.framework.firefox;
 
 import org.openqa.selenium.firefox.FirefoxProfile;
 import java.io.File;
@@ -8,7 +8,7 @@ import static qa.framework.SeUtil.locate;
 public class FireBug {
 
   public static void addTo(FirefoxProfile profile) throws IOException {
-    File firebug = locate("third_party/firebug/firebug-1.5.0-fx.xpi");
+    File firebug = locate("third_party/firebug/firebug-1.12.4-fx.xpi");
     profile.addExtension(firebug);
     profile.setPreference("extensions.firebug.addonBarOpened", true);
     profile.setPreference("extensions.firebug.allPagesActivation", "on");
@@ -20,9 +20,7 @@ public class FireBug {
     profile.setPreference("extensions.firebug.showErrorCount", true);
     profile.setPreference("extensions.firebug.showJSErrors", true);
     profile.setPreference("extensions.firefox.toolbarCustomizationDone", true);
-
-    // Prevent the first run page being displayed
-    profile.setPreference("extensions.firebug.currentVersion", "1.7.3");
+    profile.setPreference("extensions.firebug.currentVersion", "1.12.34");
   }
 
 }

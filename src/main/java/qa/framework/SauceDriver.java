@@ -18,21 +18,10 @@ import com.google.common.base.Throwables;
 import qa.framework.testng.SauceOnDemandAuthentication;
 
 public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
-
-	private static final String SAUCE_JOB_NAME_ENV_NAME = "SAUCE_JOB_NAME";
-	private static final String SELENIUM_VERSION_ENV_NAME = "SAUCE_SELENIUM_VERSION";
-	private static final String SELENIUM_IEDRIVER_ENV_NAME = "SAUCE_IEDRIVER_VERSION";
-	private static final String SELENIUM_CHROMEDRIVER_ENV_NAME = "SAUCE_CHROMEDRIVER_VERSION";
-	private static final String DESIRED_BROWSER_VERSION_ENV_NAME = "SAUCE_BROWSER_VERSION";
-	private static final String SAUCE_DISABLE_VIDEO_ENV_NAME = "SAUCE_DISABLE_VIDEO";
-	private static final String SAUCE_BUILD_ENV_NAME = "SAUCE_BUILD_NUMBER";
-	private static final String SAUCE_NATIVE_ENV_NAME = "NATIVE_EVENTS";
-	private static final String SAUCE_REQUIRE_FOCUS_ENV_NAME = "REQUIRE_FOCUS";
-	private static final String DESIRED_OS_ENV_NAME = "SAUCE_OS";
-	private static final String SAUCE_URL_ENV_NAME = "SAUCE_URL";
-	private static final String DEFAULT_SAUCE_URL = "ondemand.saucelabs.com:80";
 	
 	private static SauceOnDemandAuthentication soda = new SauceOnDemandAuthentication();
+	private static SeProps props = new SeProps(); 
+	private static final String DEFAULT_SAUCE_URL = "ondemand.saucelabs.com:80";
 
 	public SauceDriver(Capabilities desiredCapabilities) {
 		super( getSauceEndpoint(),
@@ -40,28 +29,28 @@ public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
 				desiredCapabilities,
 				getSeleniumVersion(),
 				getDesiredBrowserVersion(),
-				getEffectivePlatform() 
+				getDesiredOS() 
 		    ) 
 		);
 		System.out.println( "Started new SauceDriver; see job at https://saucelabs.com/jobs/" + this.getSessionId() );
 	}
 
 	private static String getDesiredBrowserVersion() {
-		return SeUtil.readPropertyOrEnv(DESIRED_BROWSER_VERSION_ENV_NAME, "");
+		return props.getProperty( "SAUCE_BROWSER_VERSION" );
 	}
 
-	private static String getDesiredOS() {
-		return SeUtil.getNonNullEnv(DESIRED_OS_ENV_NAME);
+	private static Platform getDesiredOS() {
+		return Platform.extractFromSysProperty( props.getProperty( "SAUCE_OS" ) );
 	}
 
 	private static String getSeleniumVersion() {
-		return SeUtil.getNonNullEnv(SELENIUM_VERSION_ENV_NAME);
+		return props.getProperty( "SAUCE_SELENIUM_VERSION" );
 	}
 
 	private static URL getSauceEndpoint() {
 		String sauceUsername = soda.getUsername();
 		String sauceKey = soda.getAccessKey();
-		String sauceUrl = SeUtil.readPropertyOrEnv( SAUCE_URL_ENV_NAME, "" );
+		String sauceUrl = props.getProperty( "SAUCE_URL" );
 		if ( sauceUrl == null ) {
 			sauceUrl = DEFAULT_SAUCE_URL;
 		}
@@ -80,9 +69,9 @@ public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
 		mungedCapabilities.setCapability("disable-popup-handler", true);
 		mungedCapabilities.setCapability("public", "public");
 		mungedCapabilities.setCapability("record-video", shouldRecordVideo());
-		mungedCapabilities.setCapability("build", SeUtil.readPropertyOrEnv( SAUCE_BUILD_ENV_NAME, "" ) );
+		mungedCapabilities.setCapability("build", props.getProperty( "SAUCE_BUILD_NUMBER" ) );
 
-		String nativeEvents = SeUtil.readPropertyOrEnv( SAUCE_NATIVE_ENV_NAME, "" );
+		String nativeEvents = props.getProperty( "NATIVE_EVENTS" );
 		if (nativeEvents != null) {
 			String[] tags = {nativeEvents};
 			mungedCapabilities.setCapability("tags", tags);
@@ -94,13 +83,13 @@ public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
 		}
 		mungedCapabilities.setPlatform(platform);
 
-		String jobName = SeUtil.readPropertyOrEnv( SAUCE_JOB_NAME_ENV_NAME, "" );
+		String jobName = props.getProperty( "SAUCE_JOB_NAME" );
 		if ( jobName != null ) {
 			mungedCapabilities.setCapability("name", jobName);
 		}
 
 		if (DesiredCapabilities.internetExplorer().getBrowserName().equals(desiredCapabilities.getBrowserName())) {
-			String ieDriverVersion = SeUtil.readPropertyOrEnv( SELENIUM_IEDRIVER_ENV_NAME, "" );
+			String ieDriverVersion = props.getProperty( "SAUCE_IE_DRIVER_VERSION" );
 			if (ieDriverVersion != null) {
 				mungedCapabilities.setCapability("iedriver-version", ieDriverVersion);
 			}
@@ -108,7 +97,7 @@ public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
 		}
 
 		if ( DesiredCapabilities.chrome().getBrowserName().equals( desiredCapabilities.getBrowserName()  ) ) {
-			String chromeDriverVersion = SeUtil.readPropertyOrEnv( SELENIUM_CHROMEDRIVER_ENV_NAME, "" );
+			String chromeDriverVersion = props.getProperty( "SAUCE_CHROME_DRIVER_VERSION" );
 			if (chromeDriverVersion == null) {
 				chromeDriverVersion = "2.2";
 			}
@@ -116,28 +105,21 @@ public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
 			mungedCapabilities.setCapability("chromedriver-version", chromeDriverVersion);
 		}
 
-		String requireFocus = SeUtil.readPropertyOrEnv( SAUCE_REQUIRE_FOCUS_ENV_NAME, "" );
+		String requireFocus = props.getProperty( "REQUIRE_FOCUS" );
 		if (requireFocus != null) {
-			mungedCapabilities.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS,
-					Boolean.parseBoolean(requireFocus));
+			mungedCapabilities.setCapability( InternetExplorerDriver.REQUIRE_WINDOW_FOCUS,
+					Boolean.parseBoolean(requireFocus) );
 		}
 
 		return mungedCapabilities;
 	}
 
 	public static boolean shouldRecordVideo() {
-		return ! Boolean.parseBoolean( SeUtil.readPropertyOrEnv( SAUCE_DISABLE_VIDEO_ENV_NAME, "" ) );
-	}
-
-	public static Platform getEffectivePlatform() {
-		System.out.println("Effective architecture: " + Architecture.X64 );
-		return Platform.extractFromSysProperty( getDesiredOS() );
+		return ! Boolean.parseBoolean( props.getProperty( "SAUCE_DISABLE_VIDEO" ) );
 	}
 
 	public <X> X getScreenshotAs(OutputType<X> target) {
-		// Get the screenshot as base64.
-		String base64 = (String) execute(DriverCommand.SCREENSHOT).getValue();
-		// ... and convert it.
+		String base64 = (String) execute( DriverCommand.SCREENSHOT ).getValue();
 		return target.convertFromBase64Png(base64);
 	}
 }
