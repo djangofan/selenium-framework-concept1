@@ -1,4 +1,4 @@
 out
 .idea
-sauce-labs.key
+*.key
 /target
