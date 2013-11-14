@@ -11,7 +11,3 @@ Run using Maven 3.10+, passing any required Surefire parameters like so:
 
     mvn.bat surefire:test
      
-or
-
-    mvn.bat -Dgroups=smoke surefire:test
-
