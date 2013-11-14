@@ -1,5 +1,7 @@
 package qa.framework.testng;
 
+import qa.framework.SeDriver;
+import qa.framework.SeProps;
 import qa.framework.SeUtil;
 import qa.framework.testng.SauceOnDemandAuthentication;
 import qa.framework.testng.SauceOnDemandSessionIdProvider;
@@ -26,6 +28,8 @@ public class SauceOnDemandTestListener extends TestListenerAdapter {
     //private static final String SELENIUM_BROWSER = "SELENIUM_BROWSER";
     //private static final String SELENIUM_PLATFORM = "SELENIUM_PLATFORM";
     //private static final String SELENIUM_VERSION = "SELENIUM_VERSION";
+	
+	public static SeProps props = SeDriver.props;
 
     /**
      * The underlying {@link com.saucelabs.common.SauceOnDemandSessionIdProvider} instance which contains the Selenium session id.  This is typically
@@ -55,7 +59,7 @@ public class SauceOnDemandTestListener extends TestListenerAdapter {
         String platform = SeUtil.readPropertyOrEnv( SELENIUM_PLATFORM, "" );
         if ( platform != null && !platform.equals("") ) {
             System.setProperty( "os", platform );
-        }
+        } 
         String version = SeUtil.readPropertyOrEnv( SELENIUM_VERSION, "" );
         if ( version != null && !version.equals("") ) {
             System.setProperty( "version", version );
@@ -83,7 +87,7 @@ public class SauceOnDemandTestListener extends TestListenerAdapter {
             sauceOnDemandAuthentication = provider.getAuthentication();
         } else {
             //otherwise use the default authentication
-            sauceOnDemandAuthentication = new SauceOnDemandAuthentication();
+            sauceOnDemandAuthentication = new SauceOnDemandAuthentication( props.getProperty("KEY_FILE") );
         }
         this.sauceREST = new SauceREST( sauceOnDemandAuthentication.getUsername(), sauceOnDemandAuthentication.getAccessKey() );
     }

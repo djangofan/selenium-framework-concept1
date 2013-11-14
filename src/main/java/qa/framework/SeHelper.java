@@ -9,6 +9,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Wait;
 import org.slf4j.Logger;
@@ -26,13 +27,15 @@ public class SeHelper {
 	String mainWindowTitle = "";
 	Set<String> handleCache = new HashSet<String>();
 	Logger helperlog;
+	RemoteWebDriver driver;
 	
-	public SeHelper() {
+	public SeHelper( RemoteWebDriver drv ) {
 		helperlog = LoggerFactory.getLogger( "WindowHelper" );
+		driver = drv;
 		helperlog.info("Invoked WindowHelper helper class.");
 	}
 	
-	public WebElement getElementByLocator( SauceDriver driver, By locator ) {
+	public WebElement getElementByLocator( By locator ) {
 		Wait<WebDriver> wait = new FluentWait<WebDriver>( driver )
 			    .withTimeout(30, TimeUnit.SECONDS)
 			    .pollingEvery(5, TimeUnit.SECONDS)
@@ -47,7 +50,7 @@ public class SeHelper {
 	 *  contain. If new windows are found, switch to latest window and
 	 *  update allHandles cache.
 	 */
-	public String handleNewWindow( SauceDriver driver) {
+	public String handleNewWindow() {
 		String newHandle = "";
 		printHandles();
 		Set<String> updatedHandles = driver.getWindowHandles();
@@ -81,6 +84,22 @@ public class SeHelper {
 		handleCache = updatedHandles; // updates remembered set of open windows
 		return newHandle;
 	}
+	
+	public void quitBrowser() {
+		Set<String> handles = driver.getWindowHandles();
+		if ( handles.size() > 1 ) {
+			helperlog.info("Closing " + handles.size() + " window(s).");
+			for ( String windowId : handles ) {
+				helperlog.info("-- Closing window handle: " + windowId );
+				driver.switchTo().window( windowId ).close();
+			}
+		} else if ( handles.size()==1 ) {
+			helperlog.info("Closing last open window.");
+		} else {
+			helperlog.info("There were no window handles to close.");
+		}
+		driver.quit(); // this quit is critical, otherwise last window will hang open
+	}
 
 	public void printHandles() {
 		helperlog.info( "Open windows:" );
@@ -92,7 +111,7 @@ public class SeHelper {
 		}
 	}
 
-	public void updateHandleCache( SauceDriver driver ) {
+	public void updateHandleCache() {
 		helperlog.info("Updating cache of window handles...");
 		printHandles();
 		Set<String> updatedHandles = driver.getWindowHandles();

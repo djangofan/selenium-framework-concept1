@@ -14,9 +14,8 @@ public class SauceOnDemandAuthentication {
 
     private String username = "";
     private String accessKey = "";
-    private String keyFileLoc = "sauce.key";
 
-    public SauceOnDemandAuthentication() {
+    public SauceOnDemandAuthentication( String keyFileLoc ) {
         	File keyFile = new File( keyFileLoc );
         	if ( keyFile.exists() ) {
                 loadCredentialsFromFile( keyFile );

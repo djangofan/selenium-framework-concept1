@@ -14,8 +14,6 @@ public abstract class AbstractPage implements LoadablePage {
 	
 	public AbstractPage() {
 		pagelog = LoggerFactory.getLogger( this.getClass() );
-		window = new SeHelper();
-		util = new SeUtil();
 	}
 	
     /* Default implementaion of get() */

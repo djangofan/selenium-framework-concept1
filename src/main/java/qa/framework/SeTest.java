@@ -1,9 +1,9 @@
 package qa.framework;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
 
 import qa.framework.testng.SauceOnDemandAuthentication;
@@ -12,57 +12,43 @@ import qa.framework.testng.SauceOnDemandAuthenticationProvider;
 import qa.framework.testng.SauceOnDemandTestListener;
 
 @Listeners({SauceOnDemandTestListener.class})
-public abstract class SeTest extends SeDriver implements SauceOnDemandSessionIdProvider, 
+public abstract class SeTest implements SauceOnDemandSessionIdProvider, 
         SauceOnDemandAuthenticationProvider {
 
-	public SeUtil util;
-	public SeProps props;
-	public SeHelper window;
+	protected static Logger testlog = LoggerFactory.getLogger( "SeTest" );
+	public static SeProps props = SeDriver.props;
+	public SeDriver driver;
 
 	public SeTest() {
-		super();
-		this.initializeBrowser( BrowserType.FIREFOX );		
-		util = new SeUtil();
-		props = new SeProps();
-		window = new SeHelper();
+		super();		
+		driver = new SeDriver();
 	}
 
 	@BeforeClass
 	public static void setUpClass() {
-		selog.info("Calling SeTest.setUpClass...");
-	}
-
-	@BeforeTest
-	public void setUpTest() {
-		selog.info("Calling SeTest.setUpTest...");
+		testlog.info("Calling SeTest.setUpClass...");
 	}
 
 	@AfterClass
 	public void tearDownClass() {
-		selog.info("Calling SeTest.tearDownClass...");
-		getDriver().quit();
-	}
-
-	@AfterMethod
-	public void cleanUpMethod() {
-		selog.info("Calling SeTest.cleanUpMethod...");
-		getDriver().manage().deleteAllCookies();
+		testlog.info("Calling SeTest.tearDownClass...");
+		driver.quit();
 	}
 
 	@Override
 	public SauceOnDemandAuthentication getAuthentication() {
-		SauceOnDemandAuthentication soda = new SauceOnDemandAuthentication();
+		SauceOnDemandAuthentication soda = new SauceOnDemandAuthentication( props.getProperty("KEY_FILE") );
 		if ( soda.isLoaded() ) {			
 			return soda;
 		} else {
-			selog.info("The SauceLabs authentication properties file, containing key and username, is not loaded.");
+			testlog.info("The SauceLabs authentication properties file, containing key and username, is not loaded.");
 			return null;
 		}
 	}	
 
 	@Override
 	public String getSessionId() {
-		return getDriver().getSessionId().toString();
+		return driver.getSessionId().toString();
 	}
 
 }

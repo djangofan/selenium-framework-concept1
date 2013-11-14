@@ -5,19 +5,24 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import qa.framework.SeHelper;
 import qa.framework.SeTest;
+import qa.framework.SeUtil;
 import qa.framework.page.etsy.EtsySearchPage;
 
-public class EtsyTest2 extends SeTest {
+public class EtsyTest2 extends SeTest {	
+	
+	SeHelper window;
+	SeUtil util;
 
 	EtsyTest2() {
 		super();
-		selog.info("Loaded EtsyTest2 class.");
+		testlog.info("Loaded EtsyTest2 class.");
 	}
 
 	@BeforeTest
 	public void setUpTest() {	
-		selog.info("EtsyTest2.setUpTest()...");
+		testlog.info("EtsyTest2.setUpTest()...");
 	}
 
 	/*  Will implement this as soon as I get the framework working
@@ -57,23 +62,25 @@ public class EtsyTest2 extends SeTest {
 
 	@Test(dataProvider = "dummy2", threadPoolSize = 1, invocationCount = 1,  timeOut = 60000)
 	public void test2( String tName, String sString, String dMatch ) {
-		selog.info("{} being run...", tName );
-		seDriver.get( System.getProperty("testURL") );
-		EtsySearchPage gs = new EtsySearchPage( seDriver );
+		testlog.info("{} being run...", tName );
+		window = new SeHelper( driver );
+		util = new SeUtil();
+		driver.get( System.getProperty("testURL") );
+		EtsySearchPage gs = new EtsySearchPage( driver );
 		gs.setSearchString( sString );
 		gs.selectInEtsyDropdown( dMatch );  
 		gs.clickSearchButton();
 		util.sleep(2);
 		gs.clickEtsyLogo(); // click Etsy logo
-		selog.info("Page object test '{}' is done.", tName );
+		testlog.info("Page object test '{}' is done.", tName );
 	}
 
 	@AfterTest
 	public void cleanUpTest() {		
-		seDriver.get("about:about");
+		driver.get("about:about");
 		util.sleep(2);
-		this.quitBrowser();
-		selog.info("Finished cleanUp EtsyTest2");
+		window.quitBrowser();
+		testlog.info("Finished cleanUp EtsyTest2");
 	}
 
 }
